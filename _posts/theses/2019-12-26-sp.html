@@ -1,0 +1,228 @@
+---
+layout: post
+title: "Urdu Handwriting Recognition using Deep Learning"
+permalink: "/theses/sp"
+---
+<!DOCTYPE html>
+<html>
+<style type="text/css">
+p {text-align:justify;}
+.tg  {border-collapse:collapse;border-spacing:0;margin:10px auto; width: 70%;margin-left: 15%;margin-right: 10%}
+.tg td{font-family:Arial, sans-serif;font-size:14px;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:black;}
+.tg th{font-family:Arial, sans-serif;font-size:14px;font-weight:normal;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:black;}
+.tg .tg-c3ow{border-color:inherit;text-align:center;vertical-align:top}
+@media screen and (max-width: 767px) {.tg {width: auto !important;}.tg col {width: auto !important;}.tg-wrap {overflow-x: auto;-webkit-overflow-scrolling: touch;margin: auto 0px;}};
+</style>
+
+<body>
+<p>This is a short overview of my Senior Project. For more information, please refer to my <a href="{{site.baseurl}}\assets\theses\fyp\pdfs\FYP-Thesis.pdf" target="_blank">thesis</a> or <a href="{{site.baseurl}}\assets\theses\fyp\pdfs\FYP-Paper.pdf" target="_blank">this</a> short project paper. The code for this project is available <a href="https://github.com/shehryar-malik/Urdu-Handwriting-Recognition-using-Deep-Learning" targer="_blank">here</a>.</p>
+
+<p>Urdu is the national language of Pakistan and is spoken by over a 100 million people. It is written from right to left using the Persian script and has 58 letters. Characters physically join together to form ligatures. Each word contains one or more ligatures. The shape of each character varies according to its position in the ligature. Unlike English, no space is inserted between words in Urdu.</p>
+
+<p>This project uses deep learning develop an Urdu handwriting recognition system. Such systems are often referred to as optical character recognition (OCR) systems. The project was divided into two main components: (a) dataset collection and (b) implementation and training of deep learning models.</p>
+
+<h3>A. Dataset Collection</h3>
+<p>To prepare an Urdu handwriting dataset for this project, 500,000 text lines were selected from Urdu literature. 10,000 lines were picked from these lines in such a way that the ratios of the frequencies of words remained the same. These lines (after some filtering) were divided into 490 pages, each consisting of 20 lines. Each page was given a unique 4-digit i.d. and was written by a distinct writer. Each writer too got a unique 4-digit i.d.</p>
+
+<p>The writers ranged between 15 and 30 years of age, were of both sexes and mostly belonged to schools, colleges and universities. The writers were given pages with black lines drawn on them for writing. Red pens with 6 different stroke widths were used for writing. The writers were instructed to leave one blank line after every line. Writers usually took 1 to 3 lines to write each printed text line.</p>
+
+<p>Each page was scanned using a flatbed scanner at 300 dots per inch (dpi) and saved using the .jpg format. Only the red pixels were extracted from each page. This removed the black lines in the background. The images were then segmented into text lines using horizontal projection. Each image was assigned a unique 10 digit i.d. of the format aaaa\_bbbb\_cc, where aaaa was the i.d. of the writer who wrote them, bbbb was the i.d. of the 20-line page that the writer wrote and cc was the line number of the writer's page.</p>
+
+<p>The final dataset contains 15,164 text lines written by 490 different writers in 6 different strokes and has 13,497 trigrams, 1,674 bigrams and 61 unigrams.</p>
+
+<p>The dataset is further divided into training and test sets consisting of 13,351 and 1,813 images respectively. 440 writers contributed to the training set while 86 contributed to the test set. 288 images in the test set are of writers who also contributed to the training set. For more statistics regarding this dataset, please refer to my thesis. This dataset may be obtained by contacting the <a href="http://www.cle.org.pk/" target="_blank">Center for Language Engineering, Lahore</a>.</p>
+
+<h3>B. Deep Leaning Models</h3>
+
+<h4>I. Preprocessing</h4>
+<p>All white columns in the images are removed. The images are then binarized using Otsu's method and normalized to a height of 64. The width is adjusted in such a way that the aspect ratio is maintained. Images are divided into 5 buckets depending on their widths. All images in a bucket are zero-padded upto the maximum width in that bucket.</p>
+
+<p>In Urdu, each character has a different shape based on its position (initial, in-between, final, isolated) in its ligature. We assign each <i>shape</i> a distinct i.d.</p>
+
+<p>For all experiments, we use Adam with an initial learning rate of 0.96. The batch size is set to 32. We use a dropout of 0.2 for all recurrent neural networks. We also use gradient clipping. The gradients are re-scaled whenever a gradient norm exceeds 5. No L2 regularization was used.</p>
+
+<h4>II. CNN-RNN-CTC Model</h4>
+<p>The following figure shows the CNN-RNN-CTC model.<img src="{{site.baseurl}}\assets\theses\fyp\images\CONV-BLSTM-CTC.png"></p>
+
+<p>As Urdu is read from right to left, we flip all images horizontally before feeding them to the network. Each CONV-POOL block contains a convolutional layer, a ReLU activation and a pooling layer in that order. In some cases, batch normalization is applied to the output of the max pooling layer. The following table details the settings used for these blocks. The two numbers in the Pool Strides column correspond to the horizontal and vertical strides respectively. A stride of 1 essentially means that no pooling was done for that axis.</p>
+
+
+<div class="tg-wrap"><table class="tg">
+  <tr>
+    <th class="tg-c3ow">Block</th>
+    <th class="tg-c3ow">Filter Size</th>
+    <th class="tg-c3ow">Pool Strides</th>
+    <th class="tg-c3ow">Batch Norm</th>
+  </tr>
+  <tr>
+    <td class="tg-c3ow">1<br></td>
+    <td class="tg-c3ow">5x5x32</td>
+    <td class="tg-c3ow">2,2</td>
+    <td class="tg-c3ow">No</td>
+  </tr>
+  <tr>
+    <td class="tg-c3ow">2<br></td>
+    <td class="tg-c3ow">5x5x64</td>
+    <td class="tg-c3ow">1,2</td>
+    <td class="tg-c3ow">No</td>
+  </tr>
+  <tr>
+    <td class="tg-c3ow">3<br></td>
+    <td class="tg-c3ow">5x5x128</td>
+    <td class="tg-c3ow">1,2</td>
+    <td class="tg-c3ow">Yes<br></td>
+  </tr>
+  <tr>
+    <td class="tg-c3ow">4<br></td>
+    <td class="tg-c3ow">5x5x128</td>
+    <td class="tg-c3ow">1,2</td>
+    <td class="tg-c3ow">No</td>
+  </tr>
+  <tr>
+    <td class="tg-c3ow">5<br></td>
+    <td class="tg-c3ow">3x3x256</td>
+    <td class="tg-c3ow">1,2</td>
+    <td class="tg-c3ow">No</td>
+  </tr>
+  <tr>
+    <td class="tg-c3ow">6<br></td>
+    <td class="tg-c3ow">3x3x256</td>
+    <td class="tg-c3ow">1,2</td>
+    <td class="tg-c3ow">No</td>
+  </tr>
+  <tr>
+    <td class="tg-c3ow">7<br></td>
+    <td class="tg-c3ow">3x3x512</td>
+    <td class="tg-c3ow">1,1</td>
+    <td class="tg-c3ow">Yes<br></td>
+  </tr>
+</table></div>
+
+<p>The learning rate was decayed by 0.96 after every 1,000 training <i>steps</i> taken by the model. The connectionist temporal classification objective function was optimized. We use two different decoding strategies: greedy search and beam search. In the latter case, the beam width is set to 10.</p>
+
+<h4>III. Incorporating a Language Model</h4>
+<p>Word-based language models are often used to improve the accuracy of optical character recognition systems. However, they can only be used for languages such as English where words can be distinguished through the `space' between them.</p>
+
+<p>We instead use a ligature-based language model. Our language model is a simple trigram model with Kneser-Ney smoothing. We make use the language model whenever a ligature ends. Recall that each character was assigned a distinct i.d. based on its position in its ligature. Therefore, we can easily identify all ids that signal the end of a ligature. For exact details and configuration used please refer to the thesis.</p>
+
+<p>The following images show the outputs of the model for different decoding schemes. Notice that for images 1 and 3 how the language model successfully manages to correct the mistakes of model.<img src="{{site.baseurl}}\assets\theses\fyp\images\samples.jpg"></p>
+
+
+<h4>IV. Attention-Based Encoder-Decoder Model</h4>
+<p>The following figure shows the architecture.<img src="{{site.baseurl}}\assets\theses\fyp\images\Attention-Model.png" height="420"></p>
+
+<p>All images are fed to several CONV-POOL blocks (not shown in the figure above). The following table details the settings used for these blocks.</p>
+<div class="tg-wrap"><table class="tg">
+  <tr>
+    <th class="tg-c3ow">Block</th>
+    <th class="tg-c3ow">Filter Size</th>
+    <th class="tg-c3ow">Pool Strides</th>
+    <th class="tg-c3ow">Batch Norm</th>
+  </tr>
+  <tr>
+    <td class="tg-c3ow">1<br></td>
+    <td class="tg-c3ow">5x5x16</td>
+    <td class="tg-c3ow">2,2</td>
+    <td class="tg-c3ow">No</td>
+  </tr>
+  <tr>
+    <td class="tg-c3ow">2<br></td>
+    <td class="tg-c3ow">5x5x32</td>
+    <td class="tg-c3ow">1,2</td>
+    <td class="tg-c3ow">Yes</td>
+  </tr>
+  <tr>
+    <td class="tg-c3ow">3<br></td>
+    <td class="tg-c3ow">5x5x64</td>
+    <td class="tg-c3ow">1,2</td>
+    <td class="tg-c3ow">No<br></td>
+  </tr>
+  <tr>
+    <td class="tg-c3ow">4<br></td>
+    <td class="tg-c3ow">3x3x64</td>
+    <td class="tg-c3ow">1,2</td>
+    <td class="tg-c3ow">Yes</td>
+  </tr>
+  <tr>
+    <td class="tg-c3ow">5<br></td>
+    <td class="tg-c3ow">3x3x128</td>
+    <td class="tg-c3ow">1,2</td>
+    <td class="tg-c3ow">No</td>
+  </tr>
+  <tr>
+    <td class="tg-c3ow">6<br></td>
+    <td class="tg-c3ow">3x3x128</td>
+    <td class="tg-c3ow">1,2</td>
+    <td class="tg-c3ow">No</td>
+  </tr>
+  <tr>
+    <td class="tg-c3ow">7<br></td>
+    <td class="tg-c3ow">3x3x128</td>
+    <td class="tg-c3ow">1,1</td>
+    <td class="tg-c3ow">Yes<br></td>
+  </tr>
+</table></div>
+
+
+<p>We feed the output of these blocks to an encoder-decoder network. We also make use of the Bahdanau attention mechanism. The encoder is two-layer stacked bidirectional LSTM where as the decoder is a two-layer stacked unidirectional LSTM. Each LSTM layer has 512 units. We use layer normalization for both the encoder and the decoder. The alignment model is a simple feed forward network with 512 hidden units. We also assign each character id an embedding vector of size 256. It is this embedding vector that is fed to the decoder. We optimize the cross-entropy objective function for each character in the transcription. We do not flip images in this case and leave it to the model to learn the direction of the script.</p>
+
+<p>The following video shows the attention mechanism on an image in the test set. Note that the model learnt to read from right to left on its own.</p>
+ <video width="728" height="288" controls>
+  <source src="{{site.baseurl}}\assets\theses\fyp\videos\FYP-Alignment.mp4" type="video/mp4">
+Your browser does not support the video tag.
+</video> 
+
+<p>Note that in Bahdanau attention, the attention mechanism makes use of the output of the decoder's RNN at the previous time step. Therefore, it is not active for the first time step. Hence, to make a prediction at the first time step, the decoder has to rely upon the final hidden state of the encoder (which is passed on to it, as shown in the figure above). As such, we have no "attention" map for the fist time step (as shown in the video).</p>
+
+<p>When we first implemented this architecture, we forgot to pass the final state of the encoder to the decoder. This meant that the decoder did not have any access to the image when it had to predict the first character. When we analyzed our model's outputs closely, we found that it always predicted 'alif' as the first character. This was quite a strange behaviour. We then analyzed our training set and found that the most frequent first character in all of the images in the training set was 'alif'. Since the model did not have access to the image when predicting the first character, it learnt that it could decrease its loss maximally by just outputting 'alif' always regardless of what the actual first character was. Outputting any other character would only increase its loss. The attention mechanism would then just ignore the first character and start reading the text from the second character. In a way (at least in a deterministic setting), in this case the model achieved its global minima. This observation finally helped us debug this error in the model.</p>
+
+<h4>V. Results</h4>
+<div class="tg-wrap"><table class="tg">
+  <tr>
+    <th class="tg-c3ow"></th>
+    <th class="tg-c3ow">CNN-RNN-CTC</th>
+    <th class="tg-c3ow">Encoder-Decoder</th>
+  </tr>
+  <tr>
+    <td class="tg-c3ow">Greedy Search<br></td>
+    <td class="tg-c3ow">88.50%</td>
+    <td class="tg-c3ow">89.52%</td>
+  </tr>
+  <tr>
+    <td class="tg-c3ow">Beam Search<br></td>
+    <td class="tg-c3ow">88.75%</td>
+    <td class="tg-c3ow">90.07%</td>
+  </tr>
+  <tr>
+    <td class="tg-c3ow">Beam Search + Language Modeling<br></td>
+    <td class="tg-c3ow">91.51%</td>
+    <td class="tg-c3ow">-</td>
+  </tr>
+
+  </tr>
+</table></div>
+
+
+</body>
+
+<br><br>
+<hr>
+
+<h3> Documentation</h3>
+
+<ul>
+  <li><a href="{{site.baseurl}}\assets\theses\fyp\pdfs\FYP-Proposal.pdf" target="_blank">Proposal</a></li>
+  <li><a href="{{site.baseurl}}\assets\theses\fyp\pdfs\FYP-Presentation.pdf" target="_blank">Presentation</a></li>
+  <li><a href="{{site.baseurl}}\assets\theses\fyp\pdfs\FYP-Poster.pdf" target="_blank">Poster</a></li>
+  <li><a href="{{site.baseurl}}\assets\theses\fyp\pdfs\FYP-Thesis.pdf" target="_blank">Thesis</a></li>
+  <li><a href="{{site.baseurl}}\assets\theses\fyp\pdfs\FYP-Paper.pdf" target="_blank">Project Paper</a></li>
+  <li><a href="{{site.baseurl}}\assets\theses\fyp\pdfs\FYP-Brochure.pdf" target="_blank">Brochure</a></li>
+</ul>
+
+<h3>Video</h3>
+<video width="728" height="288" controls>
+  <source src="{{site.baseurl}}\assets\theses\fyp\videos\FYP-Video.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+
+</html>

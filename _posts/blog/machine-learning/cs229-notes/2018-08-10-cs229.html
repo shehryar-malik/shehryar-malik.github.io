@@ -1,0 +1,20 @@
+---
+layout: page
+permalink: blog/machine-learning/cs229-notes/
+title: "CS229: Machine Learning's Notes"
+---
+
+<p style="text-align:justify;">I recently took Stanford’s <a href="https://see.stanford.edu/course/cs229/">CS229: Machine Learning</a> course by Andrew Ng. The course was meant as an introduction to machine learning. In the following posts, I shall be reviewing the entire course. The CS229 course has been designed to cover a lot of material. Because of this reason, neither the course nor the official notes go though the complete derivation of all the theorems and algorithms presented therein. In the following posts, however, I shall be presenting the complete derivation of most of the topics covered in those notes.</p>
+
+<p style="text-align:justify;">The reason for doing so was a story that I heard about Richard Feynman. Feynman used to boast of his ability to be able to derive all the fundamental equations of physics using only his brain and a chalk. Inspired by this, I tried to do the same. After studying and completely understanding a particular topic, I used to close all of my books and notes, and tried to derive everything from scratch on my laptop. Markdown and mathjax allowed me to type equations efficiently, quickly and most importantly neatly. The posts below are these derivations that I did from scratch usually without looking at any supporting material (I did get stuck at times after all).</p>
+
+<ul class="post-list">
+    {%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
+    {%- for post in site.categories["CS229 Notes"] reversed -%}
+    	<span class="post-meta">{{ post.date | date: date_format }}</span>
+        <a class="post-link" href="{{ post.url | relative_url }}">
+            {{ post.title | escape }}
+        </a>
+        <br>
+    {%- endfor -%}
+</ul>

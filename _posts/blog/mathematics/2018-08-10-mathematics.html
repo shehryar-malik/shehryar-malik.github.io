@@ -1,0 +1,15 @@
+---
+layout: page
+permalink: blog/mathematics/
+---
+
+<ul class="post-list">
+    {%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
+    {%- for post in site.categories["Mathematics"] -%}
+    	<span class="post-meta">{{ post.date | date: date_format }}</span>
+        <a class="post-link" href="{{ post.url | relative_url }}">
+            {{ post.title | escape }}
+        </a>
+        <br>
+    {%- endfor -%}
+</ul>

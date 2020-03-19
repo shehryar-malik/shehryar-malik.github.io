@@ -1,0 +1,95 @@
+---
+# Only the main Sass file needs front matter (the dashes are enough)
+---
+
+@import "minima";
+
+.boxed {
+  border: 1px solid green ;
+  display: inline-block;
+  height: 200px; 
+  background: yellow; 
+  transition: all 0.6s; 
+  padding-left: 20px; 
+  padding-right: 20px;
+  line-height: 50px; 
+}
+
+.card {
+    /* Add shadows to create the "card" effect */
+    color: black;
+    background-color: transparent;
+    width: 175px;
+    height: 200px;
+    border-style: dotted;
+    border-color: black;
+    border-width: 1px;
+    transition: 0.3s;
+    float: left;
+    margin-right: 50px;
+}
+
+/* On mouse-over, add a deeper shadow */
+.card:hover {
+    color: grey;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}
+
+/* Add some padding inside the card container */
+.container {
+    text-align: center; 
+    float: center;
+    padding: 15px 0px;
+    text-decoration-color: black;
+}
+
+.underline {
+	border-bottom: 1px solid black;
+	width: 100%;
+	display: block;
+	font-size: 180%;
+	margin-bottom: 20px;
+}
+
+.one-div {
+	clear: both;
+	margin-bottom: 220px;
+}
+
+a:hover {
+  color: grey;
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0);
+}
+
+/* To center images */
+.center {
+    text-align: center;
+}
+
+img[src*='#center'] { 
+    display: block;
+    margin: auto;
+}
+
+
+/** Site footer */
+.site-footer { border-top: 1px solid #e8e8e8; padding: 30px 0; }
+
+.footer-heading { font-size: 18px; margin-bottom: 15px; }
+
+.contact-list, .social-media-list { list-style: none; margin-left: 0; }
+
+.footer-col-wrapper { font-size: 15px; color: #828282; margin-left: -15px; }
+
+.footer-col { float: left; margin-bottom: 15px; padding-left: 15px; }
+
+.footer-col-1 { width: -webkit-calc(80% - (30px / 2)); width: calc(80% - (30px / 2)); }
+
+.footer-col-2 { width: -webkit-calc(20% - (30px / 2)); width: calc(20% - (30px / 2)); }
+
+
+@media screen and (max-width: 800px) { .footer-col-1, .footer-col-2 { width: -webkit-calc(50% - (30px / 2)); width: calc(50% - (30px / 2)); }
+  .footer-col-3 { width: -webkit-calc(100% - (30px / 2)); width: calc(100% - (30px / 2)); } }
+
+@media screen and (max-width: 600px) { .footer-col { float: none; width: -webkit-calc(100% - (30px / 2)); width: calc(100% - (30px / 2)); } }
+
