@@ -17,7 +17,7 @@ title: Shehryar Malik
 author: Shehryar Malik
 email: shehryar.malik@itu.edu.pk
 description: >- # this means to ignore newlines until "baseurl:"
-baseurl: "/web" # the subpath of your site, e.g. /blog
+baseurl: "" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
 
 github_username:  shehryar-malik
