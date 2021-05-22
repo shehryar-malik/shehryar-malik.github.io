@@ -22,7 +22,7 @@ url: "" # the base hostname & protocol for your site, e.g. http://example.com
 
 github_username:  shehryar-malik
 linkedin_username: malik-shehryar
-twitter_username: smalik_ai
+#twitter_username: smalik_ai
 
 # Build settings
 markdown: kramdown
