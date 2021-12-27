@@ -15,7 +15,7 @@
 # in the templates via {{ site.myvariable }}.
 title: Shehryar Malik
 author: Shehryar Malik
-email: shehryar.malik@itu.edu.pk
+email: shehryar[at]axcelerate.ai
 description: >- # this means to ignore newlines until "baseurl:"
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
